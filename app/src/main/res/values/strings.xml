@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Chatroom</string>
+    <string name="submit">Potvrdi</string>
+    <string name="input"></string>
+    <string name="user"></string>
+    <string name="b1">Posalji</string>
+    <string name="b2">Osvjezi</string>
+    <string name="input2"></string>
+    <string name="boje">Odaberi boju za chat</string>
+    <string name="radio1">Zelena</string>
+    <string name="radio2">Crna</string>
+    <string name="radio3">Crvena</string>
+    <string name="radio4">Plava</string>
+
+</resources>
