@@ -1,5 +1,7 @@
 package com.example.chatroom;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,7 +38,6 @@ public class Chat extends AppCompatActivity {
     private final String URL = "https://chatroom-android.herokuapp.com/";
 
     private String currentUser;
-    private int currentColor;
     private Button send;
     private EditText et1;
     private LinearLayout linearLayout;
@@ -49,10 +50,11 @@ public class Chat extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         currentUser = getIntent().getStringExtra("user");
-        currentColor = getIntent().getIntExtra("color",0);
 
         linearLayout = (LinearLayout) findViewById(R.id.info);
         et1 = (EditText) findViewById(R.id.mess);
+
+        et1.setTextColor(Color.WHITE);
 
         final Handler handler=new Handler();
         handler.postDelayed(new Runnable() {
@@ -70,6 +72,9 @@ public class Chat extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
 
                 Calendar cal = Calendar.getInstance();
                 Date date=cal.getTime();
@@ -212,7 +217,7 @@ public class Chat extends AppCompatActivity {
         ));
 
         ll.setOrientation(LinearLayout.HORIZONTAL);
-        if(where == "right") {
+        if(where.equals("right")) {
             ll.setGravity(Gravity.RIGHT);
         }else{
             ll.setGravity(Gravity.LEFT);
@@ -221,20 +226,40 @@ public class Chat extends AppCompatActivity {
 
 
         TextView tv = new TextView(Chat.this);
-        tv.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
 
-        tv.setText(text);
-        
-        if(where == "right") {
-            if(currentColor != 0) {
-                tv.setTextColor(currentColor);
-            }
+
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,0,0,7);
+
+        tv.setLayoutParams(params);
+        tv.setPadding(5,5,5,5);
+
+
+        int[] colors_right = {getResources().getColor(R.color.green),getResources().getColor(R.color.green)};
+        int[] colors_left = {getResources().getColor(R.color.grey),getResources().getColor(R.color.grey)};
+
+        GradientDrawable gd;
+
+        if(where.equals("right")){
+            gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors_right);
+            gd.setStroke(2,getResources().getColor(R.color.green));
+        }else{
+            gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors_left);
+            gd.setStroke(2,getResources().getColor(R.color.grey));
         }
 
 
+
+        gd.setShape(GradientDrawable.RECTANGLE);
+
+        gd.setCornerRadius(10.0f);
+
+
+        tv.setBackground(gd);
+
+        tv.setText(text);
+        tv.setTextColor(Color.WHITE);
 
 
         ll.addView(tv);
