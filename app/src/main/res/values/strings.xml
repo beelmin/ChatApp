@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">Chatroom</string>
-    <string name="submit">Potvrdi</string>
-    <string name="input"></string>
-    <string name="user"></string>
-    <string name="b1">Posalji</string>
-    <string name="b2">Osvjezi</string>
-    <string name="input2"></string>
-    <string name="naslov">Unesite Vase ime</string>
+
+    <string name="login_text">Unesite Vase ime</string>
+    <string name="login_username"></string>
+    <string name="login_button">Pridruzi se</string>
+    <string name="login_toast">Unesite Vas username</string>
+
+    <string name="send">Posalji</string>
+    <string name="message"></string>
 
 
 </resources>
+
+

@@ -41,7 +41,12 @@ public class Chat extends AppCompatActivity {
     private Button send;
     private EditText et1;
     private LinearLayout linearLayout;
+
     private RequestQueue requestQueue;
+
+    private Handler handler = new Handler();
+    private Runnable runnable;
+    private int delay = 300;
 
 
     @Override
@@ -53,19 +58,7 @@ public class Chat extends AppCompatActivity {
 
         linearLayout = (LinearLayout) findViewById(R.id.info);
         et1 = (EditText) findViewById(R.id.mess);
-
         et1.setTextColor(Color.WHITE);
-
-        final Handler handler=new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                //call function
-                Chat.this.getData();
-                handler.postDelayed(this, 300);
-            }
-        }, 300);
 
 
         send = (Button) findViewById(R.id.button1);
@@ -73,14 +66,10 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-
-
                 Calendar cal = Calendar.getInstance();
                 Date date=cal.getTime();
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                 String formattedDate=dateFormat.format(date);
-
 
                 String data = "{"+
                         "\"username\"" + ":\"" + Chat.this.currentUser + "\","+
@@ -96,11 +85,31 @@ public class Chat extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        handler.postDelayed(runnable = new Runnable() {
+            @Override
+            public void run() {
+                Chat.this.getData();
+                handler.postDelayed(runnable,delay);
+            }
+        },delay);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        handler.removeCallbacks(runnable);
+    }
+
 
 
 
     private void getData() {
-
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -121,7 +130,6 @@ public class Chat extends AppCompatActivity {
 
                                 String text = time + " " + user + " : " + message;
 
-
                                 if(user.equals(Chat.this.currentUser)) {
                                     Chat.this.newTextView(text,"right");
                                 }else{
@@ -131,27 +139,14 @@ public class Chat extends AppCompatActivity {
                             }
                         }catch (JSONException e){
                             e.printStackTrace();
-                            Toast.makeText(getApplicationContext(),
-                                    "Error: " + e.getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                            /*
-                            Toast.makeText(getApplicationContext(),
-                                    "ovdje sam",
-                                    Toast.LENGTH_LONG).show();
-                              */
+                            //Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error){
-                        Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
-                        /*
-                        Toast.makeText(getApplicationContext(),
-                                "ovdje sam 2",
-                                Toast.LENGTH_LONG).show();
-
-                        */
+                        //Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -169,12 +164,11 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject objres=new JSONObject(response);
+                    JSONObject objres = new JSONObject(response);
                     //Toast.makeText(getApplicationContext(),objres.toString(),Toast.LENGTH_LONG).show();
 
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(),"Server Error",Toast.LENGTH_LONG).show();
-
                 }
 
             }
@@ -226,12 +220,9 @@ public class Chat extends AppCompatActivity {
 
 
         TextView tv = new TextView(Chat.this);
-
-
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                                                         LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0,0,0,7);
-
         tv.setLayoutParams(params);
         tv.setPadding(5,5,5,5);
 
@@ -249,18 +240,12 @@ public class Chat extends AppCompatActivity {
             gd.setStroke(2,getResources().getColor(R.color.grey));
         }
 
-
-
         gd.setShape(GradientDrawable.RECTANGLE);
-
         gd.setCornerRadius(10.0f);
 
-
         tv.setBackground(gd);
-
         tv.setText(text);
         tv.setTextColor(Color.WHITE);
-
 
         ll.addView(tv);
         this.linearLayout.addView(ll);
